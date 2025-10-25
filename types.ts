@@ -15,6 +15,8 @@ export interface Movie {
   genres: string[];
   streamingOn?: StreamingInfo[];
   dateAdded: string; // วันที่เพิ่มหนังเข้ามาในระบบ
+  trailerUrl?: string; // Optional: ลิงก์สำหรับฝังวิดีโอตัวอย่างจาก Youtube
+  categoryTag: 'movie' | 'series'; // 'หนัง' หรือ 'ซีรี่ส์'
 }
 
 export interface MovieCategory {

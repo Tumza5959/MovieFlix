@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Movie, MovieCategory } from './types';
 import { getMovies } from './services/mockFirebaseService';
 import Header from './components/Header';
@@ -10,6 +10,10 @@ import AiSuggestModal from './components/AiSuggestModal';
 import MovieGrid from './components/MovieGrid';
 import LatestUpdates from './components/LatestUpdates';
 import MovieManagementGuide from './components/MovieManagementGuide';
+import Advertisement from './components/Advertisement';
+import StreamingSidebar from './components/StreamingSidebar';
+
+type FilterType = 'all' | 'movie' | 'series';
 
 const App: React.FC = () => {
   const [movieData, setMovieData] = useState<MovieCategory[]>([]);
@@ -19,6 +23,10 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const [selectedStreaming, setSelectedStreaming] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -28,24 +36,73 @@ const App: React.FC = () => {
       
       setMovieData(data);
       setAllMovies(allMoviesData);
-      setFilteredMovies(allMoviesData);
-
       setIsLoading(false);
     };
     fetchMovieData();
   }, []);
   
+  const availableYears = useMemo(() => {
+    if (!allMovies) return [];
+    const years = new Set(allMovies.map(movie => movie.year));
+    return Array.from(years).sort((a, b) => Number(b) - Number(a));
+  }, [allMovies]);
+
+  const availableGenres = useMemo(() => {
+    const genreCount = new Map<string, number>();
+    allMovies.forEach(movie => {
+      movie.genres.forEach(genre => {
+        genreCount.set(genre, (genreCount.get(genre) || 0) + 1);
+      });
+    });
+    return Array.from(genreCount.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allMovies]);
+
+  const streamingServices = useMemo(() => {
+    const serviceCount = new Map<string, number>();
+    allMovies.forEach(movie => {
+        movie.streamingOn?.forEach(service => {
+            serviceCount.set(service.name, (serviceCount.get(service.name) || 0) + 1);
+        });
+    });
+    return Array.from(serviceCount.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allMovies]);
+
+
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredMovies(allMovies);
-    } else {
-      const lowercasedQuery = searchQuery.toLowerCase();
-      const results = allMovies.filter(movie =>
-        movie.title.toLowerCase().includes(lowercasedQuery)
-      );
-      setFilteredMovies(results);
+    let results = allMovies;
+
+    if (searchQuery.trim() !== '') {
+        const lowercasedQuery = searchQuery.toLowerCase();
+        results = results.filter(movie =>
+          movie.title.toLowerCase().includes(lowercasedQuery)
+        );
+    } else if (selectedYear) {
+        results = results.filter(movie => movie.year === selectedYear);
+    } else if (selectedGenre) {
+        results = results.filter(movie => movie.genres.includes(selectedGenre));
+    } else if (selectedStreaming) {
+        results = results.filter(movie => 
+            movie.streamingOn?.some(s => s.name === selectedStreaming)
+        );
+    } else if (activeFilter !== 'all') {
+        results = results.filter(movie => movie.categoryTag === activeFilter);
     }
-  }, [searchQuery, allMovies]);
+    
+    setFilteredMovies(results);
+  }, [searchQuery, allMovies, activeFilter, selectedYear, selectedGenre, selectedStreaming]);
+
+  const resetFilters = () => {
+    setSelectedMovie(null);
+    setSearchQuery('');
+    setActiveFilter('all');
+    setSelectedYear(null);
+    setSelectedGenre(null);
+    setSelectedStreaming(null);
+  }
 
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
@@ -53,8 +110,7 @@ const App: React.FC = () => {
   };
 
   const handleGoHome = () => {
-    setSelectedMovie(null);
-    setSearchQuery(''); // Clear search on home
+    resetFilters();
   };
   
   const handleAiSuggest = () => {
@@ -62,9 +118,29 @@ const App: React.FC = () => {
   };
   
   const handleSearch = (query: string) => {
+    resetFilters();
     setSearchQuery(query);
-    setSelectedMovie(null); // Go back to list view when searching
   };
+  
+  const handleNavigate = (filter: FilterType) => {
+    resetFilters();
+    setActiveFilter(filter);
+  }
+
+  const handleSelectYear = (year: number) => {
+    resetFilters();
+    setSelectedYear(year);
+  };
+
+  const handleSelectGenre = (genre: string) => {
+    resetFilters();
+    setSelectedGenre(genre);
+  };
+
+  const handleSelectStreaming = (service: string) => {
+    resetFilters();
+    setSelectedStreaming(service);
+  }
 
   if (isLoading) {
     return (
@@ -80,14 +156,24 @@ const App: React.FC = () => {
     );
   }
 
-  const renderHomePage = () => {
-      if (searchQuery.trim() !== '') {
-          return <MovieGrid title={`ผลการค้นหาสำหรับ: "${searchQuery}"`} movies={filteredMovies} onSelectMovie={handleSelectMovie} />;
+  const getHomePageTitle = () => {
+      if (searchQuery.trim() !== '') return `ผลการค้นหาสำหรับ: "${searchQuery}"`;
+      if (selectedYear) return `หนังปี: ${selectedYear}`;
+      if (selectedGenre) return `หมวดหมู่: ${selectedGenre}`;
+      if (selectedStreaming) return `ผู้ให้บริการ: ${selectedStreaming}`;
+      if (activeFilter === 'movie') return 'หนังทั้งหมด';
+      if (activeFilter === 'series') return 'ซีรี่ส์ทั้งหมด';
+      return 'หนังแนะนำ';
+  }
+
+  const renderHomePageContent = () => {
+      if (searchQuery.trim() !== '' || activeFilter !== 'all' || selectedYear || selectedGenre || selectedStreaming) {
+          return <MovieGrid title={getHomePageTitle()} movies={filteredMovies} onSelectMovie={handleSelectMovie} />;
       }
       
       return (
-        <>
-            <MovieGrid title="หนังแนะนำ" movies={allMovies.slice(0, 12)} onSelectMovie={handleSelectMovie} />
+        <div className="space-y-12">
+            <MovieGrid title="หนังแนะนำ" movies={allMovies.filter(m => m.categoryTag === 'movie').slice(0, 12)} onSelectMovie={handleSelectMovie} />
             <div className="my-8 border-t border-gray-800"></div>
             <LatestUpdates movies={allMovies} onSelectMovie={handleSelectMovie} />
             <div className="my-8 border-t border-gray-800"></div>
@@ -101,19 +187,46 @@ const App: React.FC = () => {
               ))}
             <div className="my-8 border-t border-gray-800"></div>
             <MovieManagementGuide />
-        </>
+        </div>
       )
   }
 
   return (
     <div className="bg-brand-black min-h-screen font-sans">
-      <Header onGoHome={handleGoHome} onAiSuggest={handleAiSuggest} onSearch={handleSearch} />
+      <Header 
+        onGoHome={handleGoHome} 
+        onAiSuggest={handleAiSuggest} 
+        onSearch={handleSearch} 
+        onNavigate={handleNavigate}
+        onSelectYear={handleSelectYear}
+        availableYears={availableYears}
+        onSelectGenre={handleSelectGenre}
+        availableGenres={availableGenres}
+      />
       
-      <main className="pb-16 px-4 md:px-10 lg:px-16 mt-8 space-y-12">
+      <Advertisement />
+
+      <main className="container mx-auto px-4 md:px-10 lg:px-16 mt-8 pb-16">
         {selectedMovie ? (
-          <MovieDetail movie={selectedMovie} onGoBack={handleGoHome} />
+          <MovieDetail 
+            movie={selectedMovie} 
+            onGoBack={handleGoHome}
+            allMovies={allMovies}
+            onSelectMovie={handleSelectMovie}
+          />
         ) : (
-            renderHomePage()
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="flex-grow w-full lg:w-3/4">
+                {renderHomePageContent()}
+              </div>
+              <aside className="w-full lg:w-1/4 lg:sticky top-24 self-start">
+                 <StreamingSidebar 
+                    streamingServices={streamingServices}
+                    onSelectStreaming={handleSelectStreaming}
+                    selectedStreaming={selectedStreaming}
+                  />
+              </aside>
+            </div>
         )}
       </main>
       

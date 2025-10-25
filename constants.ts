@@ -3,6 +3,7 @@ import { MovieCategory } from './types';
 // ข้อมูลหนังและหมวดหมู่ทั้งหมดถูกแปลเป็นภาษาไทย
 // และเพิ่มข้อมูล `streamingOn` เพื่อชี้ไปยังผู้ให้บริการที่ถูกลิขสิทธิ์
 // เพิ่มข้อมูล `dateAdded` เพื่อใช้กับฟีเจอร์ปฏิทินอัปเดต
+// เพิ่ม trailerUrl และ categoryTag
 
 export const MOVIE_CATEGORIES: MovieCategory[] = [
   {
@@ -19,6 +20,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ไซไฟ', 'แอ็คชั่น', 'ระทึกขวัญ'],
         dateAdded: '2024-07-28',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
         ],
@@ -33,6 +36,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2023,
         genres: ['แฟนตาซี', 'ผจญภัย', 'ดราม่า'],
         dateAdded: '2024-07-27',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Disney+ Hotstar', url: 'https://www.hotstar.com/th' },
         ],
@@ -47,6 +52,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ตะวันตก', 'แอ็คชั่น'],
         dateAdded: '2024-07-26',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Amazon Prime Video', url: 'https://www.primevideo.com/' },
         ],
@@ -61,6 +68,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2022,
         genres: ['ไซไฟ', 'สยองขวัญ'],
         dateAdded: '2024-07-25',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
         ],
@@ -75,6 +84,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2023,
         genres: ['ดราม่า', 'ดนตรี'],
         dateAdded: '2024-07-24',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
       },
     ],
   },
@@ -92,6 +103,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ไซไฟ', 'ผจญภัย'],
         dateAdded: '2024-07-29',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
           { name: 'Disney+ Hotstar', url: 'https://www.hotstar.com/th' },
@@ -107,6 +120,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['แอ็คชั่น', 'ลึกลับ'],
         dateAdded: '2024-07-23',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
       },
       {
         id: '8',
@@ -118,6 +133,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ดราม่า', 'แฟนตาซี', 'โรแมนติก'],
         dateAdded: '2024-07-22',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'HBO Go', url: 'https://www.hbogo.co.th/' },
         ],
@@ -132,6 +149,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ไซไฟ', 'ระทึกขวัญ'],
         dateAdded: '2024-07-21',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
       },
       {
         id: '10',
@@ -143,6 +162,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2024,
         genres: ['ลึกลับ', 'อาชญากรรม'],
         dateAdded: '2024-07-20',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
         ],
@@ -163,6 +184,8 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2007,
         genres: ['ประวัติศาสตร์', 'สงคราม', 'แอ็คชั่น'],
         dateAdded: '2024-07-19',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
         streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
         ],
@@ -177,10 +200,50 @@ export const MOVIE_CATEGORIES: MovieCategory[] = [
         year: 2017,
         genres: ['ระทึกขวัญ', 'อาชญากรรม', 'ดราม่า'],
         dateAdded: '2024-07-18',
+        trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+        categoryTag: 'movie',
          streamingOn: [
           { name: 'Netflix', url: 'https://www.netflix.com/' },
         ],
       }
+    ]
+  },
+  {
+    id: 'popular_series',
+    title: 'ซีรี่ส์ยอดนิยม',
+    movies: [
+        {
+            id: '13',
+            title: 'มหาศึกชิงบัลลังก์',
+            description: 'เก้าตระกูลขุนนางต่อสู้เพื่อควบคุมดินแดนแห่งเวสเทอรอส ในขณะที่ศัตรูโบราณกลับมาอีกครั้งหลังจากหลับใหลมานานนับพันปี',
+            posterUrl: 'https://picsum.photos/id/301/500/750',
+            backdropUrl: 'https://picsum.photos/id/311/1280/720',
+            rating: 4.9,
+            year: 2011,
+            genres: ['แฟนตาซี', 'ดราม่า', 'ผจญภัย'],
+            dateAdded: '2024-07-17',
+            trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+            categoryTag: 'series',
+            streamingOn: [
+                { name: 'HBO Go', url: 'https://www.hbogo.co.th/' },
+            ],
+        },
+        {
+            id: '14',
+            title: 'เคมีอำมหิต',
+            description: 'ครูสอนวิชาเคมีที่ป่วยเป็นมะเร็งระยะสุดท้าย หันเหเข้าสู่วงการผลิตและค้ายาเสพติดเพื่อทิ้งมรดกไว้ให้ครอบครัว',
+            posterUrl: 'https://picsum.photos/id/321/500/750',
+            backdropUrl: 'https://picsum.photos/id/331/1280/720',
+            rating: 4.9,
+            year: 2008,
+            genres: ['อาชญากรรม', 'ดราม่า', 'ระทึกขวัญ'],
+            dateAdded: '2024-07-16',
+            trailerUrl: 'https://www.youtube.com/embed/S_84g_lT3fI',
+            categoryTag: 'series',
+            streamingOn: [
+                { name: 'Netflix', url: 'https://www.netflix.com/' },
+            ],
+        }
     ]
   }
 ];
