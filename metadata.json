@@ -1,0 +1,5 @@
+{
+  "name": "React MovieFlix",
+  "description": "A modern, responsive movie streaming web application prototype built with React, TypeScript, and Tailwind CSS. It features a dynamic UI for browsing movie categories, a detail view with a video player, and an AI-powered movie suggestion feature using the Gemini API. This is a conceptual demo and does not facilitate copyright infringement.",
+  "requestFramePermissions": []
+}
